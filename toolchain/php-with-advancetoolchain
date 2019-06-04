@@ -20,7 +20,7 @@ git checkout -t origin/PHP-7.4
 
 ./buildconf
 
-CC='/opt/at12.0/bin/gcc' CFLAGS='-m64 -O3 -g -mcpu=power9 -mtune=power9 -funroll-loops' LDFLAGS='-m64 -Wl,-q' PHP_LDFLAGS='-m64 -Wl,-q' ./configure --enable-debug --enable-cli
+CC='/opt/at12.0/bin/gcc' CFLAGS='-m64 -O3 -g -mcpu=power9 -mtune=power9 -funroll-loops’ ./configure --enable-cli
 
 NPROC=$(nproc)
 
