@@ -1,0 +1,41 @@
+#!/bin/bash
+
+wget ftp://ftp.unicamp.br/pub/linuxpatch/toolchain/at/ubuntu/dists/xenial/6976a827.gpg.key
+
+sudo apt-key add 6976a827.gpg.key
+
+echo "deb ftp://ftp.unicamp.br/pub/linuxpatch/toolchain/at/ubuntu xenial at12.0" >> /etc/apt/sources.list
+
+apt-get update
+
+apt-get install -y advance-toolchain-at12.0-runtime advance-toolchain-at12.0-devel advance-toolchain-at12.0-perf advance-toolchain-at12.0-mcore-libs
+
+apt-get install -y re2c libsqlite3-dev make autoconf bison libxml2-dev unzip
+
+git clone https://github.com/php/php-src.git
+
+cd ./php-src
+
+git checkout -t origin/PHP-7.4
+
+./buildconf
+
+CC='/opt/at12.0/bin/gcc' CFLAGS='-m64 -O3 -g -mcpu=power9 -mtune=power9 -funroll-loops' LDFLAGS='-m64 -Wl,-q' PHP_LDFLAGS='-m64 -Wl,-q' ./configure --enable-debug --enable-cli
+
+NPROC=$(nproc)
+
+time make -j $NPROC
+
+#make install
+
+ldd ./sapi/cli/php
+
+sapi/cli/php --version
+
+sapi/cli/php -m
+
+wget http://www.php-benchmark-script.com/bench.zip
+
+unzip ./bench.zip 
+
+sapi/cli/php ./bench.php
